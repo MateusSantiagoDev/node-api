@@ -3,6 +3,23 @@ import { MissingParam } from '../../error/missing-param-error'
 import { ServerError } from '../../error/server-error'
 import { EmailValidator } from '../../protocols'
 import { SignUpController } from './signup'
+import { AddAccount, AccountDto } from '../../../domain/usecase/add-account'
+import { AccountModel } from '../../../domain/model/account'
+
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add (account: AccountDto): Promise<AccountModel> {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password'
+      }
+      return new Promise(resolve => resolve(fakeAccount))
+    }
+  }
+  return new AddAccountStub()
+}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -16,13 +33,16 @@ const makeEmailValidator = (): EmailValidator => {
 interface sutTypes {
   sut: SignUpController
   emailValidatorStub: EmailValidator
+  addAccountStub: AddAccount
 }
 const makeSut = (): sutTypes => {
+  const addAccountStub = makeAddAccount()
   const emailValidatorStub = makeEmailValidator()
-  const sut = new SignUpController(emailValidatorStub)
+  const sut = new SignUpController(emailValidatorStub, addAccountStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    addAccountStub
   }
 }
 
@@ -133,20 +153,21 @@ describe('SignUp Controller', () => {
   })
 
   test('Should call AddAccount with correct values', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    const { sut, addAccountStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountStub, 'add')
     const httpRequest = {
       body: {
-        name: 'any_name',
+        name: 'valid_name',
         email: 'valid_email@mail.com',
-        password: 'any_password',
+        password: 'valid_password',
         confirmPassword: 'valid_password'
       }
     }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password'
+    })
   })
 })
