@@ -29,7 +29,7 @@ export class SignUpController implements Controller {
       }
 
       if (password !== confirmPassword) {
-        return badRequest(new InvalidParam(confirmPassword))
+        return badRequest(new InvalidParam('confirmPassword'))
       }
 
       const account = await this.addAccount.add({
