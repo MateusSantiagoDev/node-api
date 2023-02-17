@@ -16,6 +16,8 @@ describe('Mongo Helper', () => {
     let accountCollection = await sut.getCollection('accounts')
     expect(accountCollection).toBeTruthy() // espero q ele exista
     await sut.disconnect()
+    // se desconnectar espero que ao reconectar
+    // o accountCollection exista
     accountCollection = await sut.getCollection('accounts')
     expect(accountCollection).toBeTruthy()
   })
