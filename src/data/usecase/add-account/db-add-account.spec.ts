@@ -1,5 +1,23 @@
+import { AccountModel } from '../../../domain/model/account'
+import { AccountDto, AddAccount } from '../../../domain/usecase/add-account'
+import { AddAccountRepository } from '../../protocols/add-account-repository'
 import { Encrypter } from '../../protocols/encrypter'
 import { DbAccount } from './db-add-account'
+
+const makeAddAccountRepository = (): AddAccount => {
+  class AddAccountRepositoryStub implements AddAccountRepository {
+    async add (account: AccountDto): Promise<AccountModel> {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password'
+      }
+      return new Promise(resolve => resolve(fakeAccount))
+    }
+  }
+  return new AddAccountRepositoryStub()
+}
 
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -13,13 +31,16 @@ const makeEncrypter = (): Encrypter => {
 interface sutTypes {
   sut: DbAccount
   encrypterStub: Encrypter
+  addAccountRepositoryStub: AddAccount
 }
 const makeSut = (): sutTypes => {
+  const addAccountRepositoryStub = makeAddAccountRepository()
   const encrypterStub = makeEncrypter()
-  const sut = new DbAccount(encrypterStub)
+  const sut = new DbAccount(encrypterStub, addAccountRepositoryStub)
   return {
     sut,
-    encrypterStub
+    encrypterStub,
+    addAccountRepositoryStub
   }
 }
 
@@ -46,5 +67,21 @@ describe('DbAccount Usecase', () => {
     }
     const promise = sut.add(account)
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call AddAccountRepository with correct values', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    const accountSpy = jest.spyOn(addAccountRepositoryStub, 'add')
+    const account = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    await sut.add(account)
+    expect(accountSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    })
   })
 })
