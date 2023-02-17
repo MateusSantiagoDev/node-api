@@ -25,6 +25,6 @@ describe('SignUp Router', () => {
         password: '1234',
         confirmPassword: '1234'
       })
-    expect(200)
+      .expect(200)
   })
 })
