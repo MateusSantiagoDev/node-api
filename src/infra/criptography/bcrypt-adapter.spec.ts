@@ -19,4 +19,10 @@ describe('Bcrypt Adapter', () => {
     await sut.encrypt('valid_password')
     expect(hashed).toHaveBeenCalledWith('valid_password', salt)
   })
+
+  test('Should call bcrypt with correct values', async () => {
+    const sut = makeSut()
+    const hash = await sut.encrypt('valid_password')
+    expect(hash).toEqual('hash')
+  })
 })
