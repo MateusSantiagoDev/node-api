@@ -64,4 +64,19 @@ describe('LogController Decorator', () => {
       }
     })
   })
+
+  // se houver um erro 500 vai ser criado um log com esse erro
+  test('Should call controller handle', async () => {
+    const { sut, controllerStub } = makeSut()
+    const controllerSpy = jest.spyOn(controllerStub, 'handle')
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(controllerSpy).toHaveBeenCalledWith(httpRequest)
+  })
 })
