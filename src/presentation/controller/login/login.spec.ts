@@ -7,6 +7,9 @@ const makeSut = (): LoginController => {
 }
 
 describe('Login Controller', () => {
+  // testando a rota de login
+  // nese teste esta sendo verificado o caso do não
+  // envio de email pelo usuário
   test('Should return 400 if no email is provided', async () => {
     const sut = makeSut()
     const httpRequest = {
@@ -16,5 +19,16 @@ describe('Login Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParam('email')))
+  })
+  // nesse caso teste para verificar se não foi enviado o password
+  test('Should return 400 if no password is provided', async () => {
+    const sut = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new MissingParam('password')))
   })
 })
