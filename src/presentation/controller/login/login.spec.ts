@@ -1,5 +1,5 @@
 import { LoginController } from './login'
-import { badRequest } from '../../helpers/http-helper'
+import { badRequest, serverError } from '../../helpers/http-helper'
 import { MissingParam, InvalidParam } from '../../error'
 import { EmailValidator, HttpRequest } from '../signup/signup-protocols'
 
@@ -35,7 +35,7 @@ const makeSut = (): SutTypes => {
 
 describe('Login Controller', () => {
   // testando a rota de login
-  // nese teste esta sendo verificado o caso do não
+  // nesse teste esta sendo verificado o caso do não
   // envio de email pelo usuário
   test('Should return 400 if no email is provided', async () => {
     const { sut } = makeSut()
@@ -58,7 +58,8 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParam('password')))
   })
-  // garantindo a integração entre o adapter e o metodo de loginController
+  // garantindo a integração correta com um email valido
+  // entre o adapter e o metodo de loginController
   test('Should call EmailValidator with correct email', async () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
@@ -71,5 +72,15 @@ describe('Login Controller', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(badRequest(new InvalidParam('email')))
+  })
+
+  // teste para verificar se houver uma excessão
+  test('Should return 500 if EmailValidator throws', async () => {
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
