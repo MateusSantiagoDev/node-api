@@ -1,4 +1,4 @@
-import { Validation } from './validation'
+import { Validation } from '../../protocols/validation'
 
 // essa class recebe no constructor um array
 // de validadores com o tipo validator

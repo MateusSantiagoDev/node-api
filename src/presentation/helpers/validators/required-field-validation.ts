@@ -1,5 +1,5 @@
 import { MissingParam } from '../../error'
-import { Validation } from './validation'
+import { Validation } from '../../protocols/validation'
 
 // class que vai verificar se determinado parametro existe
 export class RequiredFieldValidation implements Validation {

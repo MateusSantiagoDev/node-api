@@ -1,5 +1,5 @@
 import { InvalidParam } from '../../error'
-import { Validation } from './validation'
+import { Validation } from '../../protocols/validation'
 
 // class que vai comparar dois campos
 export class CompareFieldsValidation implements Validation {
