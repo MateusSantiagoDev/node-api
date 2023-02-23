@@ -10,7 +10,7 @@ export default (app: Express): void => {
   // diretório routes para cada arquivo que ele encontrar que não contenha
   // .test. faça o build para a dist
 
-  readdirSync(`${__dirname} /../routes`).map(async file => {
+  readdirSync(`${__dirname}+/../routes`).map(async file => {
     if (!file.includes('.test.')) {
       (await import(`../routes/${file}`)).default(router)
     }
