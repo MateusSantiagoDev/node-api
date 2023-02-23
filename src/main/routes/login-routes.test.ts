@@ -50,5 +50,17 @@ describe('Login Router', () => {
         })
         .expect(200)
     })
+
+    test('Should return 401 on login', async () => {
+      await request(app)
+      // como não foi inserido nenhum usuário a collection
+      // esta vazia e consequentemente retorna 401
+        .post('/api/login')
+        .send({
+          email: 'mateus_test@email.com',
+          password: '1234'
+        })
+        .expect(401)
+    })
   })
 })
