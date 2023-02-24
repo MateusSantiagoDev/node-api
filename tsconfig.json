@@ -5,6 +5,7 @@
     "target": "es2019",
     "esModuleInterop": true,
     "strictNullChecks": false,
+    "rootDir": "src",
     "sourceMap": true // gera um arquivo .map que faz um mapeamento do 
     // arquivo ts que esta sendo usado por baixo dos panos durante o build
     // com essa configuração o vs code gera um link com o arquivo ts e 

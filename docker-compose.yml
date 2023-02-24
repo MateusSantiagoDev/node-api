@@ -15,7 +15,7 @@ services:
     restart: "always"
     command: "npm run debug"
     volumes:
-      - "./dist:/usr/src/node-api/dist"
+      - "./dist/:/usr/src/node-api/dist/"
       - "./package.json:/usr/src/node-api/package.json"
     ports:
       - "5050:5050"

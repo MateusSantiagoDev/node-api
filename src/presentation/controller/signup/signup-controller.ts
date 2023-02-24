@@ -18,6 +18,7 @@ export class SignUpController implements Controller {
         email,
         password
       })
+      account.name = 'TESTE 55'
       return ok(account)
     } catch (err) {
       return serverError(err)
