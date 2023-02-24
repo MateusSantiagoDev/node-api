@@ -4,7 +4,11 @@
     "module": "commonjs",
     "target": "es2019",
     "esModuleInterop": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "sourceMap": true // gera um arquivo .map que faz um mapeamento do 
+    // arquivo ts que esta sendo usado por baixo dos panos durante o build
+    // com essa configuração o vs code gera um link com o arquivo ts e 
+    // mostra onde temos q debugar 
   },
   "include": [ 
   // o que será publicado... (vai para dentro da "dist" quando roda o build)

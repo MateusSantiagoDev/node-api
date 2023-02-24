@@ -12,7 +12,7 @@ export default (app: Express): void => {
   // .test. faça o build para a dist
 
   readdirSync(join(__dirname, '../routes')).map(async file => {
-    if (!file.includes('.test.')) {
+    if (!file.endsWith('.map')) {
       (await import(`../routes/${file}`)).default(router)
     }
   })
