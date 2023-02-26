@@ -7,7 +7,7 @@ export class AddSurveyController implements Controller {
   async handle (httprequest: HttpRequest): Promise<HttpResponse> {
     const error = this.validation.validate(httprequest.body)
     if (error) {
-      badRequest(error)
+      return badRequest(error)
     }
     return new Promise(resolve => resolve(null))
   }
